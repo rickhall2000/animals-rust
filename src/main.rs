@@ -7,6 +7,48 @@ enum Question {
     Branch{question: String, yes: i32, no: i32}
 }
 
+enum Result {
+    Yes(i32),
+    No(i32),
+    Win,
+    Loss,
+}
+
+fn get_answer() -> bool {
+    let mut guess = String::new();
+
+    io::stdin()
+    .read_line(&mut guess)
+    .expect("Failed to read line");
+    
+    guess.trim() == "yes"
+}
+
+impl Question {
+    fn ask(&self) {
+        match self {
+            Question::Leaf{name, id} => {
+                println!("Is it a {name}");
+                if get_answer() {
+                    println!("I win");
+                } else {
+                    println!("You win");
+                }
+            },
+
+            Question::Branch{question, yes, no} => {
+                println!("{question}");
+                if get_answer() {
+                    println!("I should continue from here");
+                }
+                else {
+                    println!("I should follow the no branch");
+                }
+            },
+        }
+    }
+}
+
 fn initial_questions() -> HashMap<i32,Question>{
     let mut questions = HashMap::new();
 
@@ -23,20 +65,21 @@ fn initial_questions() -> HashMap<i32,Question>{
 
 fn print_questions(questions: HashMap<i32,Question>) 
 {
-    println!("{:?}", questions);
+    for question in questions.iter() {
+        println!("{:?}", question);
+    }
 }
 
 fn main() {
-    let mut guess = String::new();
-
-    println!("What is your answer?");
-    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line");
-
-    println!("Hello, {guess}");
 
     let mut questions = initial_questions();
+
+    let x = questions.get(&1).expect("This better work");
+    x.ask();
+
+    let x = questions.get(&2).expect("This better work");
+    x.ask();
+
     print_questions(questions);
     println!("All done");
 
