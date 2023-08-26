@@ -8,10 +8,9 @@ enum Question {
 }
 
 enum Result {
-    Yes(i32),
-    No(i32),
+    Continue(i32),
     Win,
-    Loss,
+    Lose(i32),
 }
 
 fn get_answer() -> bool {
@@ -25,14 +24,16 @@ fn get_answer() -> bool {
 }
 
 impl Question {
-    fn ask(&self) {
+    fn ask(&self) -> Result {
         match self {
             Question::Leaf{name, id} => {
                 println!("Is it a {name}");
                 if get_answer() {
                     println!("I win");
+                    Result::Win
                 } else {
                     println!("You win");
+                    Result::Lose(*id)
                 }
             },
 
@@ -40,9 +41,11 @@ impl Question {
                 println!("{question}");
                 if get_answer() {
                     println!("I should continue from here");
+                    Result::Continue(*yes)
                 }
                 else {
                     println!("I should follow the no branch");
+                    Result::Continue(*no)
                 }
             },
         }
@@ -72,7 +75,7 @@ fn print_questions(questions: HashMap<i32,Question>)
 
 fn main() {
 
-    let mut questions = initial_questions();
+    let questions = initial_questions();
 
     let x = questions.get(&1).expect("This better work");
     x.ask();
