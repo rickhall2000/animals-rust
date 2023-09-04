@@ -73,17 +73,18 @@ fn print_questions(questions: HashMap<i32,Question>)
     }
 }
 
-fn handle_loss() {
-    println!("What was your animal?");
+fn handle_loss(current_question: &Question) {
+    if let Question::Leaf{name, _id} = current_question {
+        println!("What was your animal?");
 
+        let mut right_answer = String::new();
 
-    let mut right_answer = String::new();
+        io::stdin() 
+        .read_line(&mut right_answer)
+        .expect("I want input");
 
-    io::stdin() 
-    .read_line(&mut right_answer)
-    .expect("I want input");
-
-    println!("You said: {right_answer}");
+        println!("What is a question that tells the difference between a {right_answer} and a {name}");
+        }
 }
 
 fn play_game(questions: &HashMap<i32,Question>) {
@@ -102,10 +103,9 @@ fn play_game(questions: &HashMap<i32,Question>) {
                 break;
             },
             Result::Lose => {
-                handle_loss();
+                handle_loss(current_question);
                 break;
             }
-
         };
     }
 }
